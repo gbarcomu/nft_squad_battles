@@ -11,10 +11,7 @@ export type { IERC721 } from "./IERC721";
 export type { IERC721Receiver } from "./IERC721Receiver";
 export type { ERC165 } from "./ERC165";
 export type { IERC165 } from "./IERC165";
-export type { Greeter } from "./Greeter";
-export type { NDToken } from "./NDToken";
 export type { SquadNFT } from "./SquadNFT";
-export type { Token } from "./Token";
 
 export { ERC20__factory } from "./factories/ERC20__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
@@ -26,7 +23,4 @@ export { IERC721__factory } from "./factories/IERC721__factory";
 export { IERC721Receiver__factory } from "./factories/IERC721Receiver__factory";
 export { ERC165__factory } from "./factories/ERC165__factory";
 export { IERC165__factory } from "./factories/IERC165__factory";
-export { Greeter__factory } from "./factories/Greeter__factory";
-export { NDToken__factory } from "./factories/NDToken__factory";
 export { SquadNFT__factory } from "./factories/SquadNFT__factory";
-export { Token__factory } from "./factories/Token__factory";

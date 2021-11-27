@@ -23,11 +23,11 @@ contract SquadNFT is ERC721Enumerable {
     }
 
     function getSquadComposition() public view returns (bytes8) {
-        return tokenToSquad[uint32(tokenByIndex(0))];
+        return tokenToSquad[uint32(tokenOfOwnerByIndex(msg.sender, 0))];
     }
 
     function getSquadMember(uint8 position) public view returns (bytes1) {
-        return tokenToSquad[uint32(tokenByIndex(0))][position];
+        return tokenToSquad[uint32(tokenOfOwnerByIndex(msg.sender, 0))][position];
     }
 
     modifier validSquad(bytes8 squadComposition) {
