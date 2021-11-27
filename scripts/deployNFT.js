@@ -13,17 +13,12 @@ async function main() {
     deployer.address
   );
   
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, World!");
+  const SquadNFT = await hre.ethers.getContractFactory("SquadNFT");
+  const squadNFT = await SquadNFT.deploy();
 
-  const Token = await hre.ethers.getContractFactory("Token");
-  const token = await Token.deploy();
-  
-  await greeter.deployed();
-  await token.deployed();
+  await squadNFT.deployed();
 
-  console.log("Greeter deployed to:", greeter.address);
-  console.log("Token deployed to:", token.address);
+  console.log("SquadNFT deployed to:", squadNFT.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
