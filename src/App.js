@@ -19,13 +19,13 @@ function App() {
 
   const [selectedSquad, setSelectedSquad] = useState(["0", "0", "0", "0", "0"])
 
-  const [squadFromSC, setSquadFromSC] = useState(<Col><p>No squad loaded</p></Col>)
+  const [squadFromSC, setSquadFromSC] = useState(<Button variant="dark" onClick={fetchSquad}>Load Squad</Button>)
 
   async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
   }
 
-  const [userAddress, setUserAddress] = useState(<Col><p>No address loaded</p></Col>);
+  const [userAddress, setUserAddress] = useState(<Button variant="dark" onClick={loadAddress}>Load Address</Button>);
 
 
   async function fetchSquad() {
@@ -123,13 +123,13 @@ function App() {
       {showAlert}
       <Container>
         <Row>
-          {squadFromSC}
           <Col>
-            <Button variant="primary" onClick={fetchSquad}>Fetch Squad</Button>
+            <Row>
+              {squadFromSC}
+            </Row>
           </Col>
-          {userAddress}
-          <Col>
-            <Button variant="primary" onClick={loadAddress}>Load Address</Button>
+          <Col md={{ span: 4, offset: 4 }}>
+            {userAddress}
           </Col>
         </Row>
         <Row>
@@ -186,13 +186,17 @@ function App() {
                   </Form.Select>
                 </Form.Label>
               </Row>
-              <Button variant="primary" type="submit">Submit</Button>
+              <div className="d-grid gap-2">
+              <Button variant="dark" type="submit">Submit</Button>
+              </div>
             </Form>
           </Col>
 
           <Col>
             <Image src="/img/old-map.png" />
-            <Button variant="primary" onClick={handleShow}>Create new quest!</Button>
+            <div className="d-grid gap-2">
+            <Button variant="dark" onClick={handleShow}>Create new quest!</Button>
+            </div>
           </Col>
 
         </Row>
@@ -241,7 +245,7 @@ function App() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>Close</Button>
-            <Button variant="primary" type="submit">Launch quest!</Button>
+            <Button variant="dark" type="submit">Launch quest!</Button>
           </Modal.Footer>
         </Form>
       </Modal>
