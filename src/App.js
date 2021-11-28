@@ -2,6 +2,15 @@ import './App.css';
 import { useState } from 'react';
 import { ethers } from 'ethers'
 
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
+import Image from 'react-bootstrap/Image';
+import Alert from 'react-bootstrap/Alert';
+
 import SquadNFT from './artifacts/contracts/SquadNFT.sol/SquadNFT.json'
 
 const nftSquadAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
@@ -10,11 +19,13 @@ function App() {
 
   const [selectedSquad, setSelectedSquad] = useState(["0", "0", "0", "0", "0"])
 
-  const [squadFromSC, setSquadFromSC] = useState("no squad loaded")
+  const [squadFromSC, setSquadFromSC] = useState(<Col><p>No squad loaded</p></Col>)
 
   async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
   }
+
+  const [userAddress, setUserAddress] = useState(<Col><p>No address loaded</p></Col>);
 
 
   async function fetchSquad() {
@@ -32,11 +43,16 @@ function App() {
     }
   }
 
+  async function loadAddress() {
+    const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+    setUserAddress(<Col><p>{account}</p></Col>);
+  }
+
   function composeSquad(bytesSquad) {
 
-    const characters = [<div><img src="/img/swordsman.png" style={{ width: "80%" }} alt="" /></div>,
-    <div><img src="/img/lancer.png" style={{ width: "80%" }} alt="" /></div>,
-    <div><img src="/img/knight.png" style={{ width: "80%" }} alt="" /></div>];
+    const characters = [<Col><div><img src="/img/swordsman.png" style={{ width: "100%" }} alt="" /></div></Col>,
+    <Col><div><img src="/img/lancer.png" style={{ width: "100%" }} alt="" /></div></Col>,
+    <Col><div><img src="/img/knight.png" style={{ width: "100%" }} alt="" /></div></Col>];
 
     const imgSquad = bytesSquad.split("").slice(2, 12).map((e, i) => {
       if (i % 2 !== 0) {
@@ -78,78 +94,157 @@ function App() {
     return sqd;
   }
 
-  async function signPayment() {
-    //const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
-    const account = "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc";
-    const dungeonSquad = "00010200";
+  /********************* Modal  *******************/
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const [selectedEnemySquad, setSelectedEnemySquad] = useState(["0", "0", "0"])
+
+  async function handleSubmitEnemies(event) {
+
+    event.preventDefault();
+    const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+    const byteEnemySquad = (`${selectedEnemySquad.map(e => `0${e}`).join("")}00`);
     const nonce = "00000000";
-    console.log(account);
-    console.log(ethers.utils.keccak256(`${account}${dungeonSquad}${nonce}`));
+    const commitment = ethers.utils.keccak256(`${account}${byteEnemySquad}${nonce}`);
+    setShow(false);
+    setShowAlert(<Alert variant="success" onClose={() => setShowAlert()} dismissible>Quest launched!: {commitment}</Alert>);
   }
+
+  const [showAlert, setShowAlert] = useState(false);
+
+  /****************************************/
 
   return (
     <div className="App">
-      <header className="App-header">
-
-        <button onClick={fetchSquad}>Fetch Squad</button>
-        <div class="topContainer">
+      {showAlert}
+      <Container>
+        <Row>
           {squadFromSC}
-        </div>
+          <Col>
+            <Button variant="primary" onClick={fetchSquad}>Fetch Squad</Button>
+          </Col>
+          {userAddress}
+          <Col>
+            <Button variant="primary" onClick={loadAddress}>Load Address</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <p>Select your squad composition:</p>
+            <Form onSubmit={handleSubmit}>
+              <Row>
+                <Form.Label>
+                  Member 1:
+            <Form.Select onChange={e => setSelectedSquad(handleSelection(0, e.target.value, selectedSquad))}>
+                    <option value="0">Swordsman</option>
+                    <option value="1">Lancer</option>
+                    <option value="2">Knight</option>
+                  </Form.Select>
+                </Form.Label>
+              </Row>
+              <Row>
+                <Form.Label>
+                  Member 2:
+            <Form.Select onChange={e => setSelectedSquad(handleSelection(1, e.target.value, selectedSquad))}>
+                    <option value="0">Swordsman</option>
+                    <option value="1">Lancer</option>
+                    <option value="2">Knight</option>
+                  </Form.Select>
+                </Form.Label>
+              </Row>
+              <Row>
+                <Form.Label>
+                  Member 3:
+            <Form.Select onChange={e => setSelectedSquad(handleSelection(2, e.target.value, selectedSquad))}>
+                    <option value="0">Swordsman</option>
+                    <option value="1">Lancer</option>
+                    <option value="2">Knight</option>
+                  </Form.Select>
+                </Form.Label>
+              </Row>
+              <Row>
+                <Form.Label>
+                  Member 4:
+            <Form.Select onChange={e => setSelectedSquad(handleSelection(3, e.target.value, selectedSquad))}>
+                    <option value="0">Swordsman</option>
+                    <option value="1">Lancer</option>
+                    <option value="2">Knight</option>
+                  </Form.Select>
+                </Form.Label>
+              </Row>
+              <Row>
+                <Form.Label>
+                  Member 5:
+            <Form.Select onChange={e => setSelectedSquad(handleSelection(4, e.target.value, selectedSquad))}>
+                    <option value="0">Swordsman</option>
+                    <option value="1">Lancer</option>
+                    <option value="2">Knight</option>
+                  </Form.Select>
+                </Form.Label>
+              </Row>
+              <Button variant="primary" type="submit">Submit</Button>
+            </Form>
+          </Col>
 
-        <p>Select your squad composition:</p>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Member 1:
-            <select onChange={e => setSelectedSquad(handleSelection(0, e.target.value, selectedSquad))}>
-              <option value="0">Swordsman</option>
-              <option value="1">Lancer</option>
-              <option value="2">Knight</option>
-            </select>
-          </label>
+          <Col>
+            <Image src="/img/old-map.png" />
+            <Button variant="primary" onClick={handleShow}>Create new quest!</Button>
+          </Col>
 
-          <label>
-            Member 2:
-            <select onChange={e => setSelectedSquad(handleSelection(1, e.target.value, selectedSquad))}>
-              <option value="0">Swordsman</option>
-              <option value="1">Lancer</option>
-              <option value="2">Knight</option>
-            </select>
-          </label>
+        </Row>
+      </Container>
 
-          <label>
-            Member 3:
-            <select onChange={e => setSelectedSquad(handleSelection(2, e.target.value, selectedSquad))}>
-              <option value="0">Swordsman</option>
-              <option value="1">Lancer</option>
-              <option value="2">Knight</option>
-            </select>
-          </label>
-
-          <label>
-            Member 4:
-            <select onChange={e => setSelectedSquad(handleSelection(3, e.target.value, selectedSquad))}>
-              <option value="0">Swordsman</option>
-              <option value="1">Lancer</option>
-              <option value="2">Knight</option>
-            </select>
-          </label>
-
-          <label>
-            Member 5:
-            <select onChange={e => setSelectedSquad(handleSelection(4, e.target.value, selectedSquad))}>
-              <option value="0">Swordsman</option>
-              <option value="1">Lancer</option>
-              <option value="2">Knight</option>
-            </select>
-          </label>
-
-          <input type="submit" value="Submit" />
-        </form>
-
-        <button onClick={signPayment}>Commit</button>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Set the enemy soldiers for the quest!</Modal.Title>
+        </Modal.Header>
 
 
-      </header>
+        <Form onSubmit={handleSubmitEnemies}>
+          <Modal.Body>
+            <Row>
+              <Form.Label>
+                Enemy 1:
+            <Form.Select onChange={e => setSelectedEnemySquad(handleSelection(0, e.target.value, selectedEnemySquad))}>
+                  <option value="0">Swordsman</option>
+                  <option value="1">Lancer</option>
+                  <option value="2">Knight</option>
+                </Form.Select>
+              </Form.Label>
+            </Row>
+            <Row>
+              <Form.Label>
+                Enemy 2:
+            <Form.Select onChange={e => setSelectedEnemySquad(handleSelection(1, e.target.value, selectedEnemySquad))}>
+                  <option value="0">Swordsman</option>
+                  <option value="1">Lancer</option>
+                  <option value="2">Knight</option>
+                </Form.Select>
+              </Form.Label>
+            </Row>
+            <Row>
+              <Form.Label>
+                Enemy 3:
+            <Form.Select onChange={e => setSelectedEnemySquad(handleSelection(2, e.target.value, selectedEnemySquad))}>
+                  <option value="0">Swordsman</option>
+                  <option value="1">Lancer</option>
+                  <option value="2">Knight</option>
+                </Form.Select>
+              </Form.Label>
+            </Row>
+
+
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>Close</Button>
+            <Button variant="primary" type="submit">Launch quest!</Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
 
     </div>
   );
