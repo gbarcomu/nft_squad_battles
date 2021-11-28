@@ -24,8 +24,7 @@ interface SquadNFTInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getSquadComposition()": FunctionFragment;
-    "getSquadMember(uint8)": FunctionFragment;
+    "getSquadComposition(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -52,11 +51,7 @@ interface SquadNFTInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getSquadComposition",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getSquadMember",
-    values: [BigNumberish]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -113,10 +108,6 @@ interface SquadNFTInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getSquadComposition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getSquadMember",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -244,17 +235,13 @@ export class SquadNFT extends Contract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getSquadComposition(overrides?: CallOverrides): Promise<[string]>;
-
-    "getSquadComposition()"(overrides?: CallOverrides): Promise<[string]>;
-
-    getSquadMember(
-      position: BigNumberish,
+    getSquadComposition(
+      player: string,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    "getSquadMember(uint8)"(
-      position: BigNumberish,
+    "getSquadComposition(address)"(
+      player: string,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -415,17 +402,13 @@ export class SquadNFT extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getSquadComposition(overrides?: CallOverrides): Promise<string>;
-
-  "getSquadComposition()"(overrides?: CallOverrides): Promise<string>;
-
-  getSquadMember(
-    position: BigNumberish,
+  getSquadComposition(
+    player: string,
     overrides?: CallOverrides
   ): Promise<string>;
 
-  "getSquadMember(uint8)"(
-    position: BigNumberish,
+  "getSquadComposition(address)"(
+    player: string,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -580,17 +563,13 @@ export class SquadNFT extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getSquadComposition(overrides?: CallOverrides): Promise<string>;
-
-    "getSquadComposition()"(overrides?: CallOverrides): Promise<string>;
-
-    getSquadMember(
-      position: BigNumberish,
+    getSquadComposition(
+      player: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "getSquadMember(uint8)"(
-      position: BigNumberish,
+    "getSquadComposition(address)"(
+      player: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -775,17 +754,13 @@ export class SquadNFT extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSquadComposition(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getSquadComposition()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getSquadMember(
-      position: BigNumberish,
+    getSquadComposition(
+      player: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getSquadMember(uint8)"(
-      position: BigNumberish,
+    "getSquadComposition(address)"(
+      player: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -951,20 +926,12 @@ export class SquadNFT extends Contract {
     ): Promise<PopulatedTransaction>;
 
     getSquadComposition(
+      player: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getSquadComposition()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getSquadMember(
-      position: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getSquadMember(uint8)"(
-      position: BigNumberish,
+    "getSquadComposition(address)"(
+      player: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

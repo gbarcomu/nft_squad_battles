@@ -20,11 +20,11 @@ function App() {
   async function fetchSquad() {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
       console.log({ provider })
       const contract = new ethers.Contract(nftSquadAddress, SquadNFT.abi, provider)
       try {
-        const data = await contract.getSquadComposition()
-        console.log('data: ', data)
+        const data = await contract.getSquadComposition(account)
         setSquadFromSC(composeSquad(data));
       } catch (err) {
         console.log("Error: ", err)
@@ -39,15 +39,13 @@ function App() {
     <div><img src="/img/knight.png" style={{ width: "80%" }} alt="" /></div>];
 
     const imgSquad = bytesSquad.split("").slice(2, 12).map((e, i) => {
-      console.log(e);
-      console.log(characters[0]);
       if (i % 2 !== 0) {
         return characters[e]
       }
+      else {
+        return ''
+      }
     })
-
-    console.log(imgSquad);
-
     return imgSquad
   }
 
@@ -80,13 +78,22 @@ function App() {
     return sqd;
   }
 
+  async function signPayment() {
+    //const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+    const account = "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc";
+    const dungeonSquad = "00010200";
+    const nonce = "00000000";
+    console.log(account);
+    console.log(ethers.utils.keccak256(`${account}${dungeonSquad}${nonce}`));
+  }
+
   return (
     <div className="App">
       <header className="App-header">
 
         <button onClick={fetchSquad}>Fetch Squad</button>
         <div class="topContainer">
-        {squadFromSC}
+          {squadFromSC}
         </div>
 
         <p>Select your squad composition:</p>
@@ -138,6 +145,9 @@ function App() {
 
           <input type="submit" value="Submit" />
         </form>
+
+        <button onClick={signPayment}>Commit</button>
+
 
       </header>
 
