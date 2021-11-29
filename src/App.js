@@ -12,8 +12,10 @@ import Image from 'react-bootstrap/Image';
 import Alert from 'react-bootstrap/Alert';
 
 import SquadNFT from './artifacts/contracts/SquadNFT.sol/SquadNFT.json'
+import Dungeon from './artifacts/contracts/Dungeon.sol/Dungeon.json'
 
 const nftSquadAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
+const dungeonAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512";
 
 function App() {
 
@@ -81,7 +83,7 @@ function App() {
       try {
         const transaction = await contract.registerSquad(byteSquad);
         await transaction.wait();
-        console.log(`Squad succesfully registered`);
+        console.log(`Squad successfully registered`);
       }
       catch (err) {
         console.error(err);
@@ -108,10 +110,32 @@ function App() {
     event.preventDefault();
     const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
     const byteEnemySquad = (`${selectedEnemySquad.map(e => `0${e}`).join("")}00`);
-    const nonce = "00000000";
-    const commitment = ethers.utils.keccak256(`${account}${byteEnemySquad}${nonce}`);
-    setShow(false);
-    setShowAlert(<Alert variant="success" onClose={() => setShowAlert()} dismissible>Quest launched!: {commitment}</Alert>);
+
+    if (typeof window.ethereum !== 'undefined') {
+      await requestAccount()
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(dungeonAddress, Dungeon.abi, signer);
+
+      try {
+        const nonceInt = await contract.getNonce(); // parse
+        let nonce = nonceInt.toString();
+        while (nonce.length < 6) {
+          nonce = `0${nonce}`;
+          console.log(nonce);
+        }
+        console.log(nonce);
+        const commitment = ethers.utils.keccak256(`${account}${byteEnemySquad}${nonce}`);
+
+        const transaction = await contract.createQuest(commitment);
+        await transaction.wait();
+        console.log(`Quest successfully created`);
+        setShow(false);
+        setShowAlert(<Alert variant="success" onClose={() => setShowAlert()} dismissible>Quest created! Quest commitment: {commitment}</Alert>);        
+      } catch (err) {
+        console.log("Error: ", err)
+      }
+    }
   }
 
   const [showAlert, setShowAlert] = useState(false);
