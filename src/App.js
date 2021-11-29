@@ -122,9 +122,7 @@ function App() {
         let nonce = nonceInt.toString();
         while (nonce.length < 6) {
           nonce = `0${nonce}`;
-          console.log(nonce);
         }
-        console.log(nonce);
         const commitment = ethers.utils.keccak256(`${account}${byteEnemySquad}${nonce}`);
 
         const transaction = await contract.createQuest(commitment);

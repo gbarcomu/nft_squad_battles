@@ -27,6 +27,10 @@ contract Dungeon is QuestExecution{
         squadNFT = SquadNFT(squadNFTAddress);
     }
 
+    function getQuestStage() public view returns (Stage){
+        return questStage;
+    }
+
     function createQuest(bytes32 newDungeonSquadCommitment) public notStartedQuest{
         dungeonSquadCommitment = newDungeonSquadCommitment;
         questStage = Stage.Outstanding;
