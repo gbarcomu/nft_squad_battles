@@ -14,6 +14,8 @@ import Alert from 'react-bootstrap/Alert';
 import SquadNFT from './artifacts/contracts/SquadNFT.sol/SquadNFT.json'
 import Dungeon from './artifacts/contracts/Dungeon.sol/Dungeon.json'
 
+import { ImportComponent } from './ImportElement';
+
 const nftSquadAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
 const dungeonAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512";
 
@@ -156,6 +158,7 @@ function App() {
         </Row>
         <Row>
           <Col>
+          <ImportComponent />
             <p>Select your squad composition:</p>
             <Form onSubmit={handleSubmit}>
               <Row>

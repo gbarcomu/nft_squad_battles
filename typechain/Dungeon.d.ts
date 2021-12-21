@@ -23,6 +23,7 @@ interface DungeonInterface extends ethers.utils.Interface {
   functions: {
     "createQuest(bytes32)": FunctionFragment;
     "getNonce()": FunctionFragment;
+    "getQuestStage()": FunctionFragment;
     "playQuest(uint8,uint8,uint8)": FunctionFragment;
     "resolveQuest(bytes4)": FunctionFragment;
   };
@@ -32,6 +33,10 @@ interface DungeonInterface extends ethers.utils.Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "getNonce", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getQuestStage",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "playQuest",
     values: [BigNumberish, BigNumberish, BigNumberish]
@@ -46,6 +51,10 @@ interface DungeonInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getQuestStage",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "playQuest", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "resolveQuest",
@@ -121,6 +130,10 @@ export class Dungeon extends Contract {
 
     "getNonce()"(overrides?: CallOverrides): Promise<[number]>;
 
+    getQuestStage(overrides?: CallOverrides): Promise<[number]>;
+
+    "getQuestStage()"(overrides?: CallOverrides): Promise<[number]>;
+
     playQuest(
       squadUnit1: BigNumberish,
       squadUnit2: BigNumberish,
@@ -160,6 +173,10 @@ export class Dungeon extends Contract {
 
   "getNonce()"(overrides?: CallOverrides): Promise<number>;
 
+  getQuestStage(overrides?: CallOverrides): Promise<number>;
+
+  "getQuestStage()"(overrides?: CallOverrides): Promise<number>;
+
   playQuest(
     squadUnit1: BigNumberish,
     squadUnit2: BigNumberish,
@@ -198,6 +215,10 @@ export class Dungeon extends Contract {
     getNonce(overrides?: CallOverrides): Promise<number>;
 
     "getNonce()"(overrides?: CallOverrides): Promise<number>;
+
+    getQuestStage(overrides?: CallOverrides): Promise<number>;
+
+    "getQuestStage()"(overrides?: CallOverrides): Promise<number>;
 
     playQuest(
       squadUnit1: BigNumberish,
@@ -263,6 +284,10 @@ export class Dungeon extends Contract {
 
     "getNonce()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getQuestStage(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getQuestStage()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     playQuest(
       squadUnit1: BigNumberish,
       squadUnit2: BigNumberish,
@@ -302,6 +327,10 @@ export class Dungeon extends Contract {
     getNonce(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getNonce()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getQuestStage(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getQuestStage()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     playQuest(
       squadUnit1: BigNumberish,
