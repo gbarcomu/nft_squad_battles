@@ -25,7 +25,7 @@ interface DungeonInterface extends ethers.utils.Interface {
     "getNonce()": FunctionFragment;
     "getQuestStage()": FunctionFragment;
     "playQuest(uint8,uint8,uint8)": FunctionFragment;
-    "resolveQuest(bytes4)": FunctionFragment;
+    "resolveQuest(bytes4,bytes32)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -43,7 +43,7 @@ interface DungeonInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "resolveQuest",
-    values: [BytesLike]
+    values: [BytesLike, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -150,11 +150,13 @@ export class Dungeon extends Contract {
 
     resolveQuest(
       dungeonSquad: BytesLike,
+      blindingFactor: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "resolveQuest(bytes4)"(
+    "resolveQuest(bytes4,bytes32)"(
       dungeonSquad: BytesLike,
+      blindingFactor: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -193,11 +195,13 @@ export class Dungeon extends Contract {
 
   resolveQuest(
     dungeonSquad: BytesLike,
+    blindingFactor: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "resolveQuest(bytes4)"(
+  "resolveQuest(bytes4,bytes32)"(
     dungeonSquad: BytesLike,
+    blindingFactor: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -236,11 +240,13 @@ export class Dungeon extends Contract {
 
     resolveQuest(
       dungeonSquad: BytesLike,
+      blindingFactor: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "resolveQuest(bytes4)"(
+    "resolveQuest(bytes4,bytes32)"(
       dungeonSquad: BytesLike,
+      blindingFactor: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -304,11 +310,13 @@ export class Dungeon extends Contract {
 
     resolveQuest(
       dungeonSquad: BytesLike,
+      blindingFactor: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "resolveQuest(bytes4)"(
+    "resolveQuest(bytes4,bytes32)"(
       dungeonSquad: BytesLike,
+      blindingFactor: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -348,11 +356,13 @@ export class Dungeon extends Contract {
 
     resolveQuest(
       dungeonSquad: BytesLike,
+      blindingFactor: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "resolveQuest(bytes4)"(
+    "resolveQuest(bytes4,bytes32)"(
       dungeonSquad: BytesLike,
+      blindingFactor: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
