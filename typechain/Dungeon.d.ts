@@ -12,6 +12,7 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
@@ -24,8 +25,11 @@ interface DungeonInterface extends ethers.utils.Interface {
     "createQuest(bytes32)": FunctionFragment;
     "getNonce()": FunctionFragment;
     "getQuestStage()": FunctionFragment;
+    "owner()": FunctionFragment;
     "playQuest(uint8,uint8,uint8)": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
     "resolveQuest(bytes4,bytes32)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -37,13 +41,22 @@ interface DungeonInterface extends ethers.utils.Interface {
     functionFragment: "getQuestStage",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "playQuest",
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "resolveQuest",
     values: [BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
   ): string;
 
   decodeFunctionResult(
@@ -55,20 +68,31 @@ interface DungeonInterface extends ethers.utils.Interface {
     functionFragment: "getQuestStage",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "playQuest", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "resolveQuest",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
 
   events: {
     "BattleWinners(bool,bool,bool)": EventFragment;
     "IsPlayerWinner(bool)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
     "PseudoRandomNumbers(uint8,uint8,uint8)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "BattleWinners"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "IsPlayerWinner"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PseudoRandomNumbers"): EventFragment;
 }
 
@@ -118,12 +142,12 @@ export class Dungeon extends Contract {
   functions: {
     createQuest(
       newDungeonSquadCommitment: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     "createQuest(bytes32)"(
       newDungeonSquadCommitment: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getNonce(overrides?: CallOverrides): Promise<[number]>;
@@ -134,17 +158,29 @@ export class Dungeon extends Contract {
 
     "getQuestStage()"(overrides?: CallOverrides): Promise<[number]>;
 
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    "owner()"(overrides?: CallOverrides): Promise<[string]>;
+
     playQuest(
       squadUnit1: BigNumberish,
       squadUnit2: BigNumberish,
       squadUnit3: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     "playQuest(uint8,uint8,uint8)"(
       squadUnit1: BigNumberish,
       squadUnit2: BigNumberish,
       squadUnit3: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "renounceOwnership()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -159,16 +195,26 @@ export class Dungeon extends Contract {
       blindingFactor: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "transferOwnership(address)"(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   createQuest(
     newDungeonSquadCommitment: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   "createQuest(bytes32)"(
     newDungeonSquadCommitment: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   getNonce(overrides?: CallOverrides): Promise<number>;
@@ -179,17 +225,29 @@ export class Dungeon extends Contract {
 
   "getQuestStage()"(overrides?: CallOverrides): Promise<number>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  "owner()"(overrides?: CallOverrides): Promise<string>;
+
   playQuest(
     squadUnit1: BigNumberish,
     squadUnit2: BigNumberish,
     squadUnit3: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   "playQuest(uint8,uint8,uint8)"(
     squadUnit1: BigNumberish,
     squadUnit2: BigNumberish,
     squadUnit3: BigNumberish,
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "renounceOwnership()"(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -202,6 +260,16 @@ export class Dungeon extends Contract {
   "resolveQuest(bytes4,bytes32)"(
     dungeonSquad: BytesLike,
     blindingFactor: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "transferOwnership(address)"(
+    newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -224,6 +292,10 @@ export class Dungeon extends Contract {
 
     "getQuestStage()"(overrides?: CallOverrides): Promise<number>;
 
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    "owner()"(overrides?: CallOverrides): Promise<string>;
+
     playQuest(
       squadUnit1: BigNumberish,
       squadUnit2: BigNumberish,
@@ -238,6 +310,10 @@ export class Dungeon extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
+
     resolveQuest(
       dungeonSquad: BytesLike,
       blindingFactor: BytesLike,
@@ -247,6 +323,16 @@ export class Dungeon extends Contract {
     "resolveQuest(bytes4,bytes32)"(
       dungeonSquad: BytesLike,
       blindingFactor: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "transferOwnership(address)"(
+      newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -265,6 +351,14 @@ export class Dungeon extends Contract {
       undefined: null
     ): TypedEventFilter<[boolean], { arg0: boolean }>;
 
+    OwnershipTransferred(
+      previousOwner: string | null,
+      newOwner: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
+
     PseudoRandomNumbers(
       undefined: null,
       undefined: null,
@@ -278,12 +372,12 @@ export class Dungeon extends Contract {
   estimateGas: {
     createQuest(
       newDungeonSquadCommitment: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     "createQuest(bytes32)"(
       newDungeonSquadCommitment: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getNonce(overrides?: CallOverrides): Promise<BigNumber>;
@@ -294,17 +388,29 @@ export class Dungeon extends Contract {
 
     "getQuestStage()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     playQuest(
       squadUnit1: BigNumberish,
       squadUnit2: BigNumberish,
       squadUnit3: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     "playQuest(uint8,uint8,uint8)"(
       squadUnit1: BigNumberish,
       squadUnit2: BigNumberish,
       squadUnit3: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "renounceOwnership()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -319,17 +425,27 @@ export class Dungeon extends Contract {
       blindingFactor: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "transferOwnership(address)"(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     createQuest(
       newDungeonSquadCommitment: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     "createQuest(bytes32)"(
       newDungeonSquadCommitment: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getNonce(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -340,17 +456,29 @@ export class Dungeon extends Contract {
 
     "getQuestStage()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     playQuest(
       squadUnit1: BigNumberish,
       squadUnit2: BigNumberish,
       squadUnit3: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     "playQuest(uint8,uint8,uint8)"(
       squadUnit1: BigNumberish,
       squadUnit2: BigNumberish,
       squadUnit3: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "renounceOwnership()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -363,6 +491,16 @@ export class Dungeon extends Contract {
     "resolveQuest(bytes4,bytes32)"(
       dungeonSquad: BytesLike,
       blindingFactor: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "transferOwnership(address)"(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
