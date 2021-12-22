@@ -6,6 +6,7 @@
 
 ```sh
 npm install
+```
 
 3. Start the local test node
 
