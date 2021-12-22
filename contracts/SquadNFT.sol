@@ -23,7 +23,8 @@ contract SquadNFT is ERC721Enumerable, Ownable {
         validSquad(squadComposition)
     {
         if (msg.sender != owner()) {
-            require(msg.value >= mintPrice, "Error: Price not enough");
+            require(msg.value == mintPrice, "Error: Price not enough");
+            payable(owner()).transfer(mintPrice);
         }
 
         _safeMint(msg.sender, tokenCounter);
@@ -50,9 +51,5 @@ contract SquadNFT is ERC721Enumerable, Ownable {
     modifier registeredSquad(address player) {
         require(balanceOf(player) > 0, "Error: register a squad first");
         _;
-    }
-
-    function withdraw() public onlyOwner {
-        payable(msg.sender).transfer(address(this).balance);
     }
 }

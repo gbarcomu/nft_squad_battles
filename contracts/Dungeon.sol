@@ -5,7 +5,7 @@ import "./QuestExecution.sol";
 import "./SquadNFT.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Dungeon is QuestExecution {
+contract Dungeon is QuestExecution, Ownable {
     enum Stage {
         NotStarted,
         Outstanding,
@@ -18,6 +18,12 @@ contract Dungeon is QuestExecution {
     bytes4 private playerSelectedSquad;
     uint32 private nonce;
     Stage private questStage;
+
+    uint256 private betPrice = 5.5 ether;
+    uint256 private fee = 0.5 ether;
+    uint256 private prize = 10 ether;
+
+    address payable playerAddress;
 
     event IsPlayerWinner(bool);
 
@@ -32,9 +38,11 @@ contract Dungeon is QuestExecution {
     }
 
     function createQuest(bytes32 newDungeonSquadCommitment)
-        public
+        public payable
         notStartedQuest
     {
+        require(msg.value == betPrice, "Error: Price not correct");
+        payable(owner()).transfer(fee);
         dungeonSquadCommitment = newDungeonSquadCommitment;
         questStage = Stage.Outstanding;
     }
@@ -44,10 +52,14 @@ contract Dungeon is QuestExecution {
         uint8 squadUnit2,
         uint8 squadUnit3
     )
-        public
+        public payable
         correctUnitSelection(squadUnit1, squadUnit2, squadUnit3)
         outstandingQuest
     {
+        require(msg.value == betPrice, "Error: Price not correct");
+        payable(owner()).transfer(fee);
+        playerAddress = payable(msg.sender);
+
         bytes8 wholeSquad = squadNFT.getSquadComposition(msg.sender);
         playerSelectedSquad = (
             concatBytes(
@@ -75,6 +87,14 @@ contract Dungeon is QuestExecution {
         bool playerWins = executeQuest(playerSelectedSquad, dungeonSquad);
         emit IsPlayerWinner(playerWins);
         nonce++;
+
+        if (playerWins) {
+            playerAddress.transfer(prize);
+        }
+        else {
+            payable(msg.sender).transfer(prize);
+        }
+
         questStage = Stage.NotStarted;
     }
 
