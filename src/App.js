@@ -1,15 +1,33 @@
-import { Outlet, Link } from "react-router-dom";
-import Navbar from 'react-bootstrap/Navbar';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
+import { Outlet } from "react-router-dom";
+import Image from 'react-bootstrap/Image';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import { Menu } from './Menu';
 import { MintSquad } from './MintSquad';
+import { DisplayUserSquad } from './DisplayUserSquad';
 
 export default function App() {
   return (
     <div>
-      <Menu/>
-      <MintSquad/>
+      <Menu />
+      <Row>
+        <Col>
+          <DisplayUserSquad />
+        </Col>
+        <Col xs={8}>
+          <Row>
+            <Col></Col>
+            <Col xs={3}>
+              <Image src="/img/blacksmith.png" fluid />
+            </Col>
+            <Col></Col>
+          </Row>
+          <Row>
+            <MintSquad />
+          </Row>
+        </Col>
+        <Col></Col>
+      </Row>
       <Outlet />
     </div>
   );

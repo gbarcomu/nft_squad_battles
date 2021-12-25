@@ -1,19 +1,12 @@
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
-
-import SquadNFT from './artifacts/contracts/SquadNFT.sol/SquadNFT.json'
+import Row from 'react-bootstrap/Row';
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
 
 import { useState } from 'react';
-import { ethers } from 'ethers'
-
-import { nftSquadAddress, loadEthereumAccount } from './ethereumConnector.js';
-
+import { mintSquad } from './ethereumConnector.js';
 
 function MintSquad() {
-  //const nftSquadAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
 
   const [selectedSquad, setSelectedSquad] = useState(["0", "0", "0", "0", "0"])
 
@@ -21,25 +14,16 @@ function MintSquad() {
 
     event.preventDefault();
 
-    if (typeof window.ethereum !== 'undefined') {
-      await loadEthereumAccount()
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(nftSquadAddress, SquadNFT.abi, signer);
+    const byteSquad = (`0x${selectedSquad.map(e => `0${e}`).join("")}000000`);
 
-      const byteSquad = (`0x${selectedSquad.map(e => `0${e}`).join("")}000000`);
-      console.log(byteSquad)
-
-      try {
-        const transaction = await contract.registerSquad(byteSquad);
-        await transaction.wait();
-        console.log(`Squad successfully registered`);
-      }
-      catch (err) {
-        console.error(err);
-      }
+    try {
+      mintSquad(byteSquad);
+    }
+    catch (err) {
+      console.error(err);
     }
   }
+
   function handleSelection(pos, val, sqd) {
     sqd[pos] = val
     return sqd;
