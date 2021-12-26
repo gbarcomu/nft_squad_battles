@@ -20,11 +20,10 @@ function Menu() {
     return (
         <Navbar bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand href="#home">Navbar</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/">SquadNFT</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <Nav.Link href="#home2">Home2</Nav.Link>
-            <Nav.Link as={Link} to="/expenses">Pricing</Nav.Link>
+            <Nav.Link as={Link} to="/createsquad">Create Squad</Nav.Link>
+            <Nav.Link as={Link} to="/createquest">Create Quest</Nav.Link>
           </Nav>
           <Nav>
           {userAddress}
