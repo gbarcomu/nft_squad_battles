@@ -1,5 +1,7 @@
 import Container from 'react-bootstrap/Container';
 import Image from 'react-bootstrap/Image';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 import { fetchSquad } from './ethereumConnector.js';
 import { useEffect, useState } from 'react';
@@ -43,12 +45,16 @@ function DisplayUserSquad() {
         return imgSquad;
     }
 
-    //fetchSquad();
-
-
     return (
         <Container>
+            <Row>
+            <h5 class="pt-4"> My squad units:</h5>
+            <Col></Col>
+            <Col xs={12} sm={10} md={8}>
             {userSquad}
+            </Col>
+            <Col></Col>
+            </Row>
         </Container>
     )
 }

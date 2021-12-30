@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { Menu } from '../Menu';
 import { DisplayUserSquad } from '../DisplayUserSquad';
-import { fetchQuestStage, startQuest } from '../ethereumConnector';
+import { fetchQuestStage, startQuest, resolveQuest } from '../ethereumConnector';
 import { useState, useEffect } from 'react';
 
 export default function CreateQuest() {
@@ -17,10 +17,17 @@ export default function CreateQuest() {
     try {
       fetchQuestStage().then(data => {
         if (parseInt(data) === 0) {
-          setQuestStage(<Button variant="dark" onClick={handleShow}>Create new quest!</Button>);
+          setQuestStage(<div className="d-grid gap-2"><Button variant="dark" onClick={handleShow}>Create new quest!</Button>
+            <Button variant="dark" disabled>Resolve quest!</Button></div>);
+        }
+        else if (parseInt(data) === 1) {
+          setQuestStage(<div className="d-grid gap-2"><Button variant="dark" disabled>Create new quest!</Button>
+            <Button variant="dark" disabled>Resolve quest!</Button>
+            <h5>There is a quest outstanding, wait until someone plays it, or play it yourself!</h5></div>);
         }
         else {
-          setQuestStage(<p>Ongoing quest!</p>);
+          setQuestStage(<div className="d-grid gap-2"><Button variant="dark" disabled>Create new quest!</Button>
+            <Button variant="dark" onClick={handleShow2}>Resolve quest!</Button></div>);
         }
       });
     }
@@ -50,6 +57,33 @@ export default function CreateQuest() {
   function handleSelection(pos, val, sqd) {
     sqd[pos] = val
     return sqd;
+  }
+
+  /*********** Second modal */
+
+  const [show2, setShow2] = useState(false);
+
+  const handleClose2 = () => setShow2(false);
+  const handleShow2 = () => setShow2(true);
+
+  const [files, setFiles] = useState("");
+
+  function handleChange(e) {
+    const fileReader = new FileReader();
+    fileReader.readAsText(e.target.files[0], "UTF-8");
+    fileReader.onload = e => {
+      console.log("e.target.result", e.target.result);
+      const resolveData = JSON.parse(e.target.result);
+      setFiles(resolveData);
+    };
+  }
+
+  function handleSubmitCommitment(event) {
+    event.preventDefault();
+    if (files.byteEnemySquad !== undefined && files.blindingFactor !== undefined) {
+      console.log(files.byteEnemySquad, files.blindingFactor)
+      resolveQuest(files.byteEnemySquad, files.blindingFactor);
+    }
   }
 
   return (
@@ -116,8 +150,33 @@ export default function CreateQuest() {
 
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>Close</Button>
+            <Button variant="secondary" onClick={handleClose2}>Close</Button>
             <Button variant="dark" type="submit">Launch quest!</Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+
+      <Modal show={show2} onHide={handleClose2}>
+        <Modal.Header closeButton>
+          <Modal.Title>Upload the quest data to resolve it!</Modal.Title>
+        </Modal.Header>
+
+
+        <Form onSubmit={handleSubmitCommitment}>
+          <Modal.Body>
+
+            <Form.Label>File</Form.Label>
+            <Form.Control
+              type="file"
+              required
+              name="file"
+              onChange={handleChange}
+            />
+
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose2}>Close</Button>
+            <Button variant="dark" type="submit">Resolve quest!</Button>
           </Modal.Footer>
         </Form>
       </Modal>

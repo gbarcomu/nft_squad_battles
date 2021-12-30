@@ -1,6 +1,7 @@
 import { ethers } from 'ethers'
 import SquadNFT from './artifacts/contracts/SquadNFT.sol/SquadNFT.json'
 import Dungeon from './artifacts/contracts/Dungeon.sol/Dungeon.json'
+import { toHexString, exportToJson } from './utils'
 
 const mintPrice = "5.0";
 const questPrice = "5.5";
@@ -77,23 +78,49 @@ export async function startQuest(byteEnemySquad) {
         console.log(`Blinding factor2: ${blindingFactor}`);
         const commitment = await ethers.utils.keccak256(`${account}${byteEnemySquad}${nonce}${blindingFactor}`);
 
-        const transaction = await contract.createQuest(commitment,  {
+        const transaction = await contract.createQuest(commitment, {
             value: ethers.utils.parseEther(questPrice)
         });
         await transaction.wait();
-        console.log(`Quest successfully created`);
-        console.log(commitment);
+        exportToJson({
+            byteEnemySquad,
+            blindingFactor
+        });
 
     } catch (err) {
         console.log(err)
     }
 }
 
-function toHexString(byteArray) {
-    return Array.from(byteArray, function(byte) {
-      return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-    }).join('')
-  }
+export async function playQuest(unit1, unit2, unit3) {
+    await loadEthereumAccount();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(dungeonAddress, Dungeon.abi, signer);
+    try {
+        const transaction = await contract.playQuest(unit1, unit2, unit3, {
+            value: ethers.utils.parseEther(questPrice)
+        });
+        await transaction.wait();
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export async function resolveQuest(dungeonSquad, blindingFactor) {
+    await loadEthereumAccount();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(dungeonAddress, Dungeon.abi, signer);
+    try {
+        const transaction = await contract.resolveQuest(`0x${dungeonSquad}`, `0x${blindingFactor}`);
+        await transaction.wait();
+
+    } catch (err) {
+        console.log(err)
+    }
+}
 
 export const nftSquadAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
 export const dungeonAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512";
