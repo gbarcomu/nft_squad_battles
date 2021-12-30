@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import Alert from 'react-bootstrap/Alert';
 import { Menu } from '../Menu';
 import { DisplayUserSquad } from '../DisplayUserSquad';
 import { fetchQuestStage, startQuest, resolveQuest } from '../ethereumConnector';
@@ -78,13 +79,20 @@ export default function CreateQuest() {
     };
   }
 
-  function handleSubmitCommitment(event) {
+  async function handleSubmitCommitment(event) {
     event.preventDefault();
     if (files.byteEnemySquad !== undefined && files.blindingFactor !== undefined) {
-      console.log(files.byteEnemySquad, files.blindingFactor)
-      resolveQuest(files.byteEnemySquad, files.blindingFactor);
+        const success = await resolveQuest(files.byteEnemySquad, files.blindingFactor);
+        if(!success) {
+          setErrorAlert(<Alert variant="danger">Error, the data uploaded is not correct. Please, try again!</Alert>);
+        }
+    }
+    else {
+      setErrorAlert(<Alert variant="danger">Error, the data uploaded is not correct. Please, try again!</Alert>);
     }
   }
+
+  const [errorAlert, setErrorAlert] = useState(<div></div>);
 
   return (
     <div>
@@ -164,7 +172,7 @@ export default function CreateQuest() {
 
         <Form onSubmit={handleSubmitCommitment}>
           <Modal.Body>
-
+            {errorAlert}
             <Form.Label>File</Form.Label>
             <Form.Control
               type="file"
