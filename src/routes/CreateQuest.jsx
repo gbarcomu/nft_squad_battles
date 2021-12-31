@@ -73,7 +73,6 @@ export default function CreateQuest() {
     const fileReader = new FileReader();
     fileReader.readAsText(e.target.files[0], "UTF-8");
     fileReader.onload = e => {
-      console.log("e.target.result", e.target.result);
       const resolveData = JSON.parse(e.target.result);
       setFiles(resolveData);
     };

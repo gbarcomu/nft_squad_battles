@@ -22,8 +22,15 @@ contract Dungeon is QuestExecution, Ownable {
     uint256 private betPrice = 5.5 ether;
     uint256 private fee = 0.5 ether;
     uint256 private prize = 10 ether;
+    uint256 private timeToResolveQuest = 1 days;
 
     address payable playerAddress;
+
+    uint256 private questPlayedTimestamp;
+
+    // function releaseAfterSixMonths() public {
+    // require(block.timestamp >= DEPLOYED_TIME + 180 days);
+    // }
 
     event IsPlayerWinner(bool);
 
@@ -38,7 +45,8 @@ contract Dungeon is QuestExecution, Ownable {
     }
 
     function createQuest(bytes32 newDungeonSquadCommitment)
-        public payable
+        public
+        payable
         notStartedQuest
     {
         require(msg.value == betPrice, "Error: Price not correct");
@@ -52,7 +60,8 @@ contract Dungeon is QuestExecution, Ownable {
         uint8 squadUnit2,
         uint8 squadUnit3
     )
-        public payable
+        public
+        payable
         correctUnitSelection(squadUnit1, squadUnit2, squadUnit3)
         outstandingQuest
     {
@@ -69,6 +78,7 @@ contract Dungeon is QuestExecution, Ownable {
             )
         );
         questStage = Stage.Completed;
+        questPlayedTimestamp = block.timestamp;
     }
 
     function concatBytes(
@@ -90,8 +100,7 @@ contract Dungeon is QuestExecution, Ownable {
 
         if (playerWins) {
             playerAddress.transfer(prize);
-        }
-        else {
+        } else {
             payable(msg.sender).transfer(prize);
         }
 
@@ -100,6 +109,19 @@ contract Dungeon is QuestExecution, Ownable {
 
     function getNonce() public view returns (uint32) {
         return nonce;
+    }
+
+    function getRemainingTime() public view completedQuest returns (uint256) {
+        return questPlayedTimestamp + timeToResolveQuest - block.timestamp;
+    }
+
+    function terminateQuestForInactivity() public completedQuest {
+        require(
+            questPlayedTimestamp + timeToResolveQuest <= block.timestamp,
+            "Error: Quest can't be terminated yet"
+        );
+        playerAddress.transfer(prize);
+        questStage = Stage.NotStarted;
     }
 
     modifier notStartedQuest() {
@@ -138,7 +160,12 @@ contract Dungeon is QuestExecution, Ownable {
     modifier checkCommitment(bytes4 dungeonSquad, bytes32 blindingFactor) {
         bytes4 bytesNonce = bytes4(abi.encodePacked(nonce));
         bytes32 solvingCommitment = keccak256(
-            abi.encodePacked(msg.sender, dungeonSquad, bytesNonce, blindingFactor)
+            abi.encodePacked(
+                msg.sender,
+                dungeonSquad,
+                bytesNonce,
+                blindingFactor
+            )
         );
         require(
             solvingCommitment == dungeonSquadCommitment,

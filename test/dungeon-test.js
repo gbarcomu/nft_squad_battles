@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const { ethers, waffle} = require("hardhat");
+const { ethers, waffle } = require("hardhat");
 
 describe("Dungeon", function () {
 
@@ -95,6 +95,7 @@ describe("Dungeon", function () {
       await dungeon.playQuest(0, 1, 3, {
         value: ethers.utils.parseEther(validDungeonPrice)
       });
+
       const tx = await dungeon.resolveQuest(`0x${enemySquad1}`, `0x${blindingFactor}`);
       const receipt = await ethers.provider.getTransactionReceipt(tx.hash);
 
@@ -155,5 +156,30 @@ describe("Dungeon", function () {
 
     });
 
+  });
+
+  describe('Quest Time', () => {
+
+    it("Shouldn't quest be terminated before the time has passed", async function () {
+
+      const dungeonAsUsr1GameMaster = dungeon.connect(usr1);
+      const dungeonAsUsr2Player = dungeon.connect(usr2);
+      const squadNFTAsUsr2Player = squadNFT.connect(usr2);
+      await squadNFTAsUsr2Player.registerSquad(validSquad, {
+        value: ethers.utils.parseEther(validMintPrice)
+      });
+
+      const commitment = ethers.utils.keccak256(`${usr1.address}${byteEnemySquad}${nonce}${blindingFactor}`);
+      await dungeonAsUsr1GameMaster.createQuest(commitment, {
+        value: ethers.utils.parseEther(validDungeonPrice)
+      });
+      await dungeonAsUsr2Player.playQuest(0, 1, 3, {
+        value: ethers.utils.parseEther(validDungeonPrice)
+      });
+
+      await expect(dungeon.terminateQuestForInactivity())
+        .to.be.revertedWith("Error: Quest can't be terminated yet");
+
+    });
   });
 });

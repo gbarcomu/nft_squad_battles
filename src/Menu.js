@@ -24,7 +24,7 @@ function Menu() {
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/createsquad">Create Squad</Nav.Link>
             <Nav.Link as={Link} to="/playquest">Play Quest</Nav.Link>
-            <Nav.Link as={Link} to="/createquest">Create Quest</Nav.Link>
+            <Nav.Link as={Link} to="/createquest">Game Master</Nav.Link>
           </Nav>
           <Nav>
           {userAddress}

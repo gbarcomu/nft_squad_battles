@@ -25,10 +25,12 @@ interface DungeonInterface extends ethers.utils.Interface {
     "createQuest(bytes32)": FunctionFragment;
     "getNonce()": FunctionFragment;
     "getQuestStage()": FunctionFragment;
+    "getRemainingTime()": FunctionFragment;
     "owner()": FunctionFragment;
     "playQuest(uint8,uint8,uint8)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "resolveQuest(bytes4,bytes32)": FunctionFragment;
+    "terminateQuestForInactivity()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
@@ -39,6 +41,10 @@ interface DungeonInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "getNonce", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getQuestStage",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRemainingTime",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -55,6 +61,10 @@ interface DungeonInterface extends ethers.utils.Interface {
     values: [BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "terminateQuestForInactivity",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
@@ -68,6 +78,10 @@ interface DungeonInterface extends ethers.utils.Interface {
     functionFragment: "getQuestStage",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRemainingTime",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "playQuest", data: BytesLike): Result;
   decodeFunctionResult(
@@ -76,6 +90,10 @@ interface DungeonInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "resolveQuest",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "terminateQuestForInactivity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -158,6 +176,10 @@ export class Dungeon extends Contract {
 
     "getQuestStage()"(overrides?: CallOverrides): Promise<[number]>;
 
+    getRemainingTime(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "getRemainingTime()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     "owner()"(overrides?: CallOverrides): Promise<[string]>;
@@ -196,6 +218,14 @@ export class Dungeon extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    terminateQuestForInactivity(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "terminateQuestForInactivity()"(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -224,6 +254,10 @@ export class Dungeon extends Contract {
   getQuestStage(overrides?: CallOverrides): Promise<number>;
 
   "getQuestStage()"(overrides?: CallOverrides): Promise<number>;
+
+  getRemainingTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getRemainingTime()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -263,6 +297,14 @@ export class Dungeon extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  terminateQuestForInactivity(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "terminateQuestForInactivity()"(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   transferOwnership(
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -291,6 +333,10 @@ export class Dungeon extends Contract {
     getQuestStage(overrides?: CallOverrides): Promise<number>;
 
     "getQuestStage()"(overrides?: CallOverrides): Promise<number>;
+
+    getRemainingTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getRemainingTime()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -325,6 +371,10 @@ export class Dungeon extends Contract {
       blindingFactor: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    terminateQuestForInactivity(overrides?: CallOverrides): Promise<void>;
+
+    "terminateQuestForInactivity()"(overrides?: CallOverrides): Promise<void>;
 
     transferOwnership(
       newOwner: string,
@@ -388,6 +438,10 @@ export class Dungeon extends Contract {
 
     "getQuestStage()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getRemainingTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getRemainingTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -426,6 +480,14 @@ export class Dungeon extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    terminateQuestForInactivity(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "terminateQuestForInactivity()"(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -455,6 +517,12 @@ export class Dungeon extends Contract {
     getQuestStage(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getQuestStage()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getRemainingTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getRemainingTime()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -491,6 +559,14 @@ export class Dungeon extends Contract {
     "resolveQuest(bytes4,bytes32)"(
       dungeonSquad: BytesLike,
       blindingFactor: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    terminateQuestForInactivity(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "terminateQuestForInactivity()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

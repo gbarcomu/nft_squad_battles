@@ -116,9 +116,11 @@ export async function resolveQuest(dungeonSquad, blindingFactor) {
     try {
         const transaction = await contract.resolveQuest(`0x${dungeonSquad}`, `0x${blindingFactor}`);
         await transaction.wait();
+        return true;
 
     } catch (err) {
         console.log(err)
+        return false;
     }
 }
 
